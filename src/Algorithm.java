@@ -6,8 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
-import static java.awt.Color.BLACK;
-import static java.awt.Color.WHITE;
+import static java.awt.Color.*;
 
 public class Algorithm {
     private final ArrayList<Point> points = new ArrayList<>();
@@ -20,14 +19,14 @@ public class Algorithm {
     private final Graphics2D graphics2D;
 
     public Algorithm(int yMax,int xMax){
-        this.current=new Point(4,4);
+        this.current=new Point(0,0);
         this.yMax=yMax;
         this.xMax=xMax;
         this.image=new BufferedImage ( 98, 98, BufferedImage.TYPE_INT_ARGB );
         this.graphics2D=image.createGraphics ();
         graphics2D.setPaint ( BLACK );
         graphics2D.fillRect ( 0, 0, image.getWidth(), image.getHeight() );
-        graphics2D.setPaint ( WHITE );
+        graphics2D.setPaint ( BLUE );
         for(int x=0;x<=image.getWidth();x=x+4) {
             for (int y = 0; y <= image.getHeight(); y = y + 4) {
                 graphics2D.fillRect(x, y, 2, 2);
@@ -37,15 +36,15 @@ public class Algorithm {
 
     public void generate() throws IOException {
         points.add(current);
-       // visited.add(new Point(105,105));
-       // points.add(new Point(105,105));
-        while (visited.size() != xMax*yMax) {
+        while (visited.size() != xMax*yMax ) {
             visited.add(current);
             current = checkStatus(current, xMax, yMax);
-            if(current.getY()==-100 || current.getX()==-100) {
-                if(points.size()>0) {
-                    current = points.get(points.size() - 1);
+            if(current.getY()==-100 || current.getX()==-100 ) {
+                if(points.size()!=0) {
                     points.remove(points.size() - 1);
+                }
+                if(points.size()!=0) {
+                    current = points.get(points.size() - 1);
                 }
             }else{
                 paintDirection(current, points.get(points.size() - 1));
@@ -71,7 +70,6 @@ public class Algorithm {
         }
 
         if(aux.size()>0){
-            System.out.println(aux);
             int rand=new Random().nextInt(aux.size());
             return aux.get(rand);
         }else{
@@ -81,16 +79,27 @@ public class Algorithm {
     }
 
     public void paintDirection(Point a,Point b) {
+        graphics2D.setPaint ( WHITE );
         if (a.getX() != b.getX()) {
             if (a.getX() > b.getX()) {
                 graphics2D.fillRect((int) (((a.getX()+b.getX())/2)), (int) (a.getY()), 2, 2);
-            } else
-                graphics2D.fillRect((int) (((b.getX()+a.getX())/2)), (int) (b.getY()), 2, 2);
+                graphics2D.fillRect((int) (((a.getX()+b.getX())/2)+2), (int) (a.getY()), 2, 2);
+                graphics2D.fillRect((int) (b.getX()), (int) (b.getY()), 2, 2);
+            } else {
+                graphics2D.fillRect((int) (((b.getX() + a.getX()) / 2)), (int) (b.getY()), 2, 2);
+                graphics2D.fillRect((int) (((b.getX() + a.getX()) / 2)-2), (int) (b.getY()), 2, 2);
+                graphics2D.fillRect((int) (b.getX()), (int) (b.getY()), 2, 2);
+            }
         } else {
             if (a.getY() > b.getY()) {
                 graphics2D.fillRect((int) (a.getX()), (int) (((a.getY()+b.getY())/2)), 2, 2);
+                graphics2D.fillRect((int) (a.getX()), (int) (((a.getY()+b.getY())/2)+2), 2, 2);
+                graphics2D.fillRect((int) (b.getX()), (int) (b.getY()), 2, 2);
             } else {
                 graphics2D.fillRect((int) (b.getX()), (int) (((b.getY()+a.getY())/2)), 2, 2);
+                graphics2D.fillRect((int) (b.getX()), (int) (((b.getY()+a.getY())/2)-2), 2, 2);
+                graphics2D.fillRect((int) (b.getX()), (int) (b.getY()), 2, 2);
+
             }
         }
     }
